@@ -24,13 +24,12 @@ This work draws inspiration from previous research on adaptive ensemble learning
 ## Repository Structure
 Aquí tienes la sección de "Repository Structure" pulida para una mejor visualización y con la corrección del nombre del archivo `__init__.py`:
 
-```markdown
 ## Repository Structure
 
 ```
 
 AdaptiveDynamicML/
-├── AHDL\_EMNIST.py           \# Main script for running simulations.
+├── AHDL_EMNIST.py           \# Main script for running simulations.
 ├── src/
 │   ├── **init**.py          \# Makes 'src' a Python package, facilitating imports.
 │   ├── models.py            \# Definitions of FastModel, SlowModel, Orchestrator, and operation modes.
@@ -46,7 +45,7 @@ AdaptiveDynamicML/
 └── requirements.txt         \# List of Python dependencies.
 
 ```
-```
+
 
 ## Setup and Execution
 
