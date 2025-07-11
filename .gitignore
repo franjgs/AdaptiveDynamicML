@@ -1,0 +1,39 @@
+# Directorios de entornos virtuales
+.venv/
+env/
+venv/
+# Ignorar la carpeta de conda (si tu entorno está en el directorio del proyecto)
+.conda/
+envs/
+pkgs/
+
+# Archivos de Python
+__pycache__/        # Caché de bytecodes de Python
+*.pyc               # Archivos de bytecode
+*.o                 # Archivos objeto
+*.so                # Archivos de librerías compartidas
+*.egg-info/         # Información de paquetes de Python
+
+# Archivos específicos de macOS
+.DS_Store           # Archivos de metadatos de macOS
+
+# Archivos de logs y resultados (específicos de tu proyecto)
+*.log
+results/*.log       # Archivos .log dentro de results
+results/plots/      # La carpeta para los gráficos generados
+
+# Archivos de Jupyter Notebook
+.ipynb_checkpoints/ # Puntos de control de Jupyter
+
+# IDEs y editores (opcional, si los usas)
+.vscode/            # Archivos de configuración de VS Code
+.idea/              # Archivos de configuración de IntelliJ/PyCharm
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de datos o modelos grandes (que no quieres versionar)
+# Si descargas datasets raw o guardas modelos grandes directamente aquí.
+# Por ejemplo, si EMNIST se descarga en una subcarpeta:
+data/raw/
+# Y si guardas modelos fuera de 'results/':
+saved_models/
