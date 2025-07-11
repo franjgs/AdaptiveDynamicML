@@ -22,21 +22,31 @@ This work draws inspiration from previous research on adaptive ensemble learning
 -   **Flexible Configuration:** A `CONFIG` dictionary (in `AHDL_EMNIST.py`) allows for easy adjustment of simulation, model, and visualization parameters.
 
 ## Repository Structure
+Aquí tienes la sección de "Repository Structure" pulida para una mejor visualización y con la corrección del nombre del archivo `__init__.py`:
+
+```markdown
+## Repository Structure
+
+```
+
 AdaptiveDynamicML/
-├── AHDL_EMNIST.py           # Main script for running simulations.
+├── AHDL\_EMNIST.py           \# Main script for running simulations.
 ├── src/
-│   ├── init.py          # Makes 'src' a Python package, facilitating imports.
-│   ├── models.py            # Definitions of FastModel, SlowModel, Orchestrator, and operation modes.
-│   ├── plottings.py         # Functions for visualizing simulation results.
-│   └── utils.py             # Utility functions for data handling, concepts, and noise.
-├── data/                    # Directory to store datasets (raw/processed).
-├── results/                 # Directory for storing simulation logs.
-│   └── plots/               # Subdirectory for generated plots.
-├── config/                  # (Optional) For external configuration files.
-├── notebooks/               # (Optional) For Jupyter notebooks for exploration or analysis.
-├── .gitignore               # Defines which files and directories Git should ignore.
-├── README.md                # This file.
-└── requirements.txt         # List of Python dependencies.
+│   ├── **init**.py          \# Makes 'src' a Python package, facilitating imports.
+│   ├── models.py            \# Definitions of FastModel, SlowModel, Orchestrator, and operation modes.
+│   ├── plottings.py         \# Functions for visualizing simulation results.
+│   └── utils.py             \# Utility functions for data handling, concepts, and noise.
+├── data/                    \# Directory to store datasets (raw/processed).
+├── results/                 \# Directory for storing simulation logs.
+│   └── plots/               \# Subdirectory for generated plots.
+├── config/                  \# (Optional) For external configuration files.
+├── notebooks/               \# (Optional) For Jupyter notebooks for exploration or analysis.
+├── .gitignore               \# Defines which files and directories Git should ignore.
+├── README.md                \# This file.
+└── requirements.txt         \# List of Python dependencies.
+
+```
+```
 
 ## Setup and Execution
 
