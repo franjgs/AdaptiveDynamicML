@@ -21,8 +21,6 @@ This work draws inspiration from previous research on adaptive ensemble learning
 -   **Results Visualization (`src/plottings.py`):** Tools to generate plots showing the evolution of performance metrics (accuracy, loss) and the orchestrator's behavior (`beta` parameter) throughout the simulation.
 -   **Flexible Configuration:** A `CONFIG` dictionary (in `AHDL_EMNIST.py`) allows for easy adjustment of simulation, model, and visualization parameters.
 
-## Repository Structure
-Aquí tienes la sección de "Repository Structure" pulida para una mejor visualización y con la corrección del nombre del archivo `__init__.py`:
 
 ## Repository Structure
 
