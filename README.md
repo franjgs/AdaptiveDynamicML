@@ -97,7 +97,7 @@ The `create_chart` function in `src/plottings.py` generates a JSON configuration
 4. Open a browser and go to [http://localhost:8000/chart.html](http://localhost:8000/chart.html) to view the interactive chart.
 5. Stop the server with Ctrl+C.
 
-### Chart.js Example
+### chart.html Example
 ```html
 <!DOCTYPE html>
 <html>
