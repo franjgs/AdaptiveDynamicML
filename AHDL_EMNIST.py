@@ -431,7 +431,8 @@ create_chart(
     averaged_logs['slow_metrics'],
     averaged_logs['orchestrator_metrics'],
     CONFIG['drift'],
-    CONFIG['simulation']['num_samples']
+    CONFIG['simulation']['num_samples'],
+    CONFIG['visualization']['plot_dir']
 )
 
 plot_results(
