@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Adaptive Hierarchical Drift Learning (AHDL) simulation using EMNIST dataset.
-Handles concept drift with fast and slow models and an adaptive orchestrator.
-Designed for debugging without a main() function.
+Adaptive Hierarchical Drift Learning (AHDL) simulation using the EMNIST dataset.
+
+This script simulates concept drift handling with fast and slow models combined via an adaptive
+orchestrator. It processes EMNIST balanced dataset images, applies concept drifts (sudden and
+gradual), trains models, evaluates performance, and generates visualizations. The simulation runs
+without a main() function for debugging purposes, logging metrics and saving plots.
 
 @author: fran
 """
@@ -22,64 +25,71 @@ from src.utils import StreamSample, concept_functions_image, \
                      preprocess_image, add_gaussian_noise, visualize_samples_with_labels
 from src.plottings import setup_visualization_points, create_chart, plot_results
 
-# Configuration dictionary
+# Define epsilon for numerical stability in clipping operations
+epsilon = tf.keras.backend.epsilon()
+
+# Configuration dictionary for simulation, image, drift, model, and visualization settings
 CONFIG = {
     'simulation': {
-        'mode': MODE_ADAPTIVE_BETA,
-        'num_repetitions': 5,
-        'num_samples': 12000,
-        'random_seed': 42,
+        'mode': MODE_ADAPTIVE_BETA,  # Simulation mode (adaptive beta for orchestrator)
+        'num_repetitions': 5,        # Number of simulation repetitions
+        'num_samples': 12000,        # Total samples per repetition
+        'random_seed': 42,           # Random seed for reproducibility
     },
     'image': {
-        'height': 28,
-        'width': 28,
-        'channels': 1,
-        'noise_level': 0.1,
+        'height': 28,                # Image height (pixels)
+        'width': 28,                 # Image width (pixels)
+        'channels': 1,               # Number of channels (1 for grayscale)
+        'noise_level': 0.1,          # Gaussian noise factor for images
     },
     'drift': {
-        3000: (2, 'sudden', 0),    # To uppercase
-        7000: (0, 'gradual', 1000), # To numbers
-        10000: (1, 'sudden', 0),    # To lowercase
+        3000: (2, 'sudden', 0),     # Switch to uppercase at sample 3000
+        7000: (0, 'gradual', 1000), # Gradual transition to numbers over 1000 samples
+        10000: (1, 'sudden', 0),    # Switch to lowercase at sample 10000
     },
     'model': {
-        'label_delay': 32,
-        'fast_buffer_size': 512,
-        'slow_buffer_size': 1024,
-        'fast_retrain_interval': 32,
-        'slow_retrain_interval': 32,
-        'evaluation_interval': 32,
-        'metrics_averaging_window': 1,
-        'fast_epochs': 1,
-        'slow_epochs': 10,
-        'fast_batch_size': 32,
-        'slow_batch_size': 64,
-        'fast_validation_split': 0.0,
-        'slow_validation_split': 0.0,
-        'fixed_beta': 0.5,
+        'label_delay': 32,           # Delay before labels become available
+        'fast_buffer_size': 512,     # Buffer size for fast model training
+        'slow_buffer_size': 1024,    # Buffer size for slow model training
+        'fast_retrain_interval': 32, # Interval for fast model retraining
+        'slow_retrain_interval': 32, # Interval for slow model retraining
+        'evaluation_interval': 32,   # Interval for model evaluation
+        'metrics_averaging_window': 1, # Window for averaging metrics
+        'fast_epochs': 1,            # Epochs for fast model training
+        'slow_epochs': 10,           # Epochs for slow model training
+        'fast_batch_size': 32,       # Batch size for fast model
+        'slow_batch_size': 64,       # Batch size for slow model
+        'fast_validation_split': 0.0, # Validation split for fast model
+        'slow_validation_split': 0.0, # Validation split for slow model
+        'fixed_beta': 0.5,           # Fixed beta for MODE_FIXED_BETA
         'als_params': {
-            'mu_a': 0.5,
-            'gamma': 0.9,
-            'theta': 1.0,
-            'a0': 0.0,
-            'p0': 1e-2,
-            'cost_function_type': 'quadratic', # 'cross_entropy',
+            'mu_a': 0.5,             # Learning rate for adaptive beta
+            'gamma': 0.9,            # Discount factor for error tracking
+            'theta': 1.0,            # Scaling factor for error updates
+            'a0': 0.0,               # Initial adaptation parameter
+            'p0': 1e-2,              # Initial prediction error variance
+            'cost_function_type': 'quadratic', # Cost function ('quadratic' or 'cross_entropy')
         },
     },
     'visualization': {
-        'enabled': False,
-        'save_plots': True,
-        'plot_dir': './results/plots',
+        'enabled': False,            # Enable/disable sample visualizations
+        'save_plots': True,          # Save performance plots
+        'plot_dir': './plots',       # Directory for saving plots
     },
 }
 
-# Set random seeds
-random.seed(CONFIG['simulation']['random_seed'])
-np.random.seed(CONFIG['simulation']['random_seed'])
-tf.random.set_seed(CONFIG['simulation']['random_seed'])
-
-# Load and preprocess EMNIST dataset
 def load_emnist_data():
-    """Load and preprocess EMNIST dataset efficiently."""
+    """
+    Load and preprocess the EMNIST balanced dataset.
+
+    Fetches the EMNIST balanced dataset using TensorFlow Datasets, preprocesses images by
+    normalizing them to [0, 1] and adding Gaussian noise, and converts labels to float32.
+    If loading fails, generates synthetic data as a fallback.
+
+    Returns:
+        tuple: (images, labels) as NumPy arrays, where images have shape
+               (num_samples, height, width, channels) and labels have shape (num_samples,).
+    """
     try:
         ds_train, ds_info = tfds.load(
             'emnist/balanced', split='train', shuffle_files=True, with_info=True, as_supervised=True
@@ -112,18 +122,33 @@ def load_emnist_data():
                 np.random.randint(0, 26, samples_needed).astype(np.int32))
 
 def get_emnist_sample(images, labels, global_idx):
-    """Retrieve a sample from preloaded EMNIST data."""
+    """
+    Retrieve a single sample from preloaded EMNIST data.
+
+    Args:
+        images (np.ndarray): Array of preloaded images.
+        labels (np.ndarray): Array of preloaded labels.
+        global_idx (int): Index of the desired sample.
+
+    Returns:
+        tuple: (image, label) if available, else (None, None).
+    """
     if global_idx < len(images):
         return images[global_idx], labels[global_idx]
     return None, None
 
-# Setup visualization points
+# Set random seeds for reproducibility
+random.seed(CONFIG['simulation']['random_seed'])
+np.random.seed(CONFIG['simulation']['random_seed'])
+tf.random.set_seed(CONFIG['simulation']['random_seed'])
+
+# Setup visualization points for sample visualization
 visualization_points = setup_visualization_points(CONFIG['drift'], CONFIG['simulation']['num_samples']) if CONFIG['visualization']['enabled'] else []
 
 # Load data
 all_images, all_labels = load_emnist_data()
 
-# Initialize logs
+# Initialize logs for storing metrics across repetitions
 all_logs = {
     'sample_indices': [],
     'fast_metrics': [],
@@ -138,6 +163,12 @@ all_logs = {
 
 # Simulation loop
 for rep in range(CONFIG['simulation']['num_repetitions']):
+    """
+    Run a single repetition of the simulation.
+
+    Initializes models, buffers, and logs; processes samples with concept drifts; trains
+    fast and slow models; evaluates performance; and logs metrics.
+    """
     print(f"\n--- Starting Repetition {rep + 1}/{CONFIG['simulation']['num_repetitions']} ---")
     
     # Initialize models and orchestrator
@@ -147,7 +178,7 @@ for rep in range(CONFIG['simulation']['num_repetitions']):
         fast_model, slow_model, **CONFIG['model']['als_params'], debug_mode=False
     )
     
-    # Initialize buffers
+    # Initialize buffers for training and evaluation
     master_buffer = deque(maxlen=max(CONFIG['model']['fast_buffer_size'], CONFIG['model']['slow_buffer_size']) + 
                                 CONFIG['model']['label_delay'])
     eval_buffer_X = deque(maxlen=CONFIG['model']['evaluation_interval'])
@@ -166,7 +197,7 @@ for rep in range(CONFIG['simulation']['num_repetitions']):
         'slow_retrain_val_accuracies': [],
     }
     
-    # Drift state
+    # Drift state for tracking concept changes
     current_concept = 0
     in_gradual_drift = False
     drift_start, drift_end, old_concept, new_concept = -1, -1, -1, -1
@@ -178,6 +209,12 @@ for rep in range(CONFIG['simulation']['num_repetitions']):
     
     # Process samples
     for sample_idx in range(CONFIG['simulation']['num_samples']):
+        """
+        Process a single sample in the simulation.
+
+        Handles concept drift, assigns binary labels, updates buffers, trains models, and
+        evaluates performance at specified intervals.
+        """
         global_idx = rep * CONFIG['simulation']['num_samples'] + sample_idx
         if global_idx >= len(all_images):
             print(f"No more EMNIST samples available after {sample_idx} samples in Repetition {rep + 1}.")
@@ -352,7 +389,7 @@ for rep in range(CONFIG['simulation']['num_repetitions']):
     
     gc.collect()
 
-# Average results
+# Average results across repetitions
 print("\n--- Calculating Averages Across Repetitions ---")
 max_log_len = min(len(log) for log in all_logs['sample_indices']) if all_logs['sample_indices'] else 0
 print(f"Max log length for averaging: {max_log_len}")
