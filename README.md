@@ -93,7 +93,9 @@ python AHDL_EMNIST.py
 The `create_chart` function in `src/plottings.py` generates a JSON configuration for Chart.js to visualize model accuracy with drift annotations. The configuration is saved as `results/plots/chart_config_<uuid>.json`. To use it:
 1. Locate the JSON file in `results/plots/`.
 2. Create an HTML file to render the chart in a web browser (example below).
-3. Open the HTML file in a browser to view the interactive chart.
+3. Run Local Server: python3 -m http.server 8000
+4. Open a browser and go to [Link](http://localhost:8000/chart.html) to view the interactive chart.
+5. Stop the server with Ctrl+C.
 
 ### Chart.js Example
 ```html
