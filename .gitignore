@@ -1,39 +1,41 @@
-# Directorios de entornos virtuales
+```
+# Python virtual environments
 .venv/
 env/
 venv/
-# Ignorar la carpeta de conda (si tu entorno está en el directorio del proyecto)
 .conda/
 envs/
 pkgs/
 
-# Archivos de Python
-__pycache__/        # Caché de bytecodes de Python
-*.pyc               # Archivos de bytecode
-*.o                 # Archivos objeto
-*.so                # Archivos de librerías compartidas
-*.egg-info/         # Información de paquetes de Python
+# Python bytecode and temporary files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
 
-# Archivos específicos de macOS
-.DS_Store           # Archivos de metadatos de macOS
+# macOS system files
+.DS_Store
 
-# Archivos de logs y resultados (específicos de tu proyecto)
+# Project-specific logs and generated files
 *.log
-results/*.log       # Archivos .log dentro de results
-results/plots/      # La carpeta para los gráficos generados
+plots/  # Generated plot files from AHDL_EMNIST.py
+results/*.log  # Log files in results directory, if any
 
-# Archivos de Jupyter Notebook
-.ipynb_checkpoints/ # Puntos de control de Jupyter
+# TensorFlow Datasets cache (for EMNIST dataset)
+data/tfds/
+tensorflow_datasets/
 
-# IDEs y editores (opcional, si los usas)
-.vscode/            # Archivos de configuración de VS Code
-.idea/              # Archivos de configuración de IntelliJ/PyCharm
+# Large data and model files
+data/raw/  # Raw datasets (e.g., downloaded EMNIST data)
+saved_models/  # Trained model checkpoints
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE and editor configurations
+.vscode/
+.idea/
 *.sublime-project
 *.sublime-workspace
-
-# Archivos de datos o modelos grandes (que no quieres versionar)
-# Si descargas datasets raw o guardas modelos grandes directamente aquí.
-# Por ejemplo, si EMNIST se descarga en una subcarpeta:
-data/raw/
-# Y si guardas modelos fuera de 'results/':
-saved_models/
+```
