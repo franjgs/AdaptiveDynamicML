@@ -444,6 +444,7 @@ plot_results(
     CONFIG['simulation']['mode'],
     CONFIG['drift'],
     CONFIG['simulation']['num_repetitions'],
+    CONFIG['model']['als_params']['cost_function_type'],
     CONFIG['visualization']['plot_dir']
 )
 

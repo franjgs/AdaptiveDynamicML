@@ -217,7 +217,7 @@ def _add_drift_annotations(plt, sample_indices, drift_points, y_min, y_max, is_b
                      rotation=90, va='bottom', ha='left', color='orange', fontsize=9)
         drift_label_added = True
 
-def plot_results(sample_indices, fast_metrics, slow_metrics, orchestrator_metrics, beta_values, simulation_mode, drift_points, num_repetitions, plot_dir):
+def plot_results(sample_indices, fast_metrics, slow_metrics, orchestrator_metrics, beta_values, simulation_mode, drift_points, num_repetitions, cost_function, plot_dir):
     """Create and save a Matplotlib plot with subplots for accuracy, loss, and beta values.
 
     Generates a figure with three subplots to visualize model performance (accuracy and loss) and
@@ -234,6 +234,7 @@ def plot_results(sample_indices, fast_metrics, slow_metrics, orchestrator_metric
         drift_points (dict): Dictionary with sample indices as keys and tuples of
                             (concept_idx, drift_type, duration) as values.
         num_repetitions (int): Number of simulation runs for averaging metrics.
+        cost_function (str):  Type of cost function ('quadratic' or 'cross_entropy').
         plot_dir (str): Directory path to save the plot.
 
     Returns:
@@ -298,7 +299,7 @@ def plot_results(sample_indices, fast_metrics, slow_metrics, orchestrator_metric
 
     y_min, y_max = plt.ylim()
     _add_drift_annotations(plt, sample_indices, drift_points, y_min, y_max, is_beta_plot=True)
-    plt.title(f'Orchestrator Beta Evolution (Avg over {num_repetitions} Runs)')
+    plt.title(f'Orchestrator Beta Evolution (Avg over {num_repetitions} Runs ({cost_function}))')
     plt.xlabel('Samples Processed')
     plt.ylabel('Beta (Fast Model Weight)')
     plt.ylim(-0.05, 1.05)
