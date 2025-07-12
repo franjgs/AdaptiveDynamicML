@@ -68,7 +68,7 @@ CONFIG = {
             'theta': 1.0,            # Scaling factor for error updates
             'a0': 0.0,               # Initial adaptation parameter
             'p0': 1e-2,              # Initial prediction error variance
-            'cost_function_type': 'quadratic', # Cost function ('quadratic' or 'cross_entropy')
+            'cost_function_type': 'cross_entropy', # 'quadratic', # Cost function ('quadratic' or 'cross_entropy')
         },
     },
     'visualization': {

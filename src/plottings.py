@@ -299,7 +299,7 @@ def plot_results(sample_indices, fast_metrics, slow_metrics, orchestrator_metric
 
     y_min, y_max = plt.ylim()
     _add_drift_annotations(plt, sample_indices, drift_points, y_min, y_max, is_beta_plot=True)
-    plt.title(f'Orchestrator Beta Evolution (Avg over {num_repetitions} Runs ({cost_function}))')
+    plt.title(f'Orchestrator Beta Evolution ({cost_function}) (Avg over {num_repetitions} Runs)')
     plt.xlabel('Samples Processed')
     plt.ylabel('Beta (Fast Model Weight)')
     plt.ylim(-0.05, 1.05)
