@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Model Accuracy Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+</head>
+<body>
+    <canvas id="accuracyChart" style="max-height: 400px;"></canvas>
+    <script>
+        fetch('results/plots/chart_config_5bb18de6-4d41-46b3-a0db-40e150831fe7.json')  // Replace <uuid> with the actual filename
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to load chart configuration');
+                return response.json();
+            })
+            .then(config => {
+                new Chart(document.getElementById('accuracyChart'), config);
+            })
+            .catch(error => {
+                console.error('Error loading chart:', error);
+                alert('Could not load chart configuration. Check the file path and JSON format.');
+            });
+    </script>
+</body>
+</html>

@@ -74,7 +74,7 @@ CONFIG = {
     'visualization': {
         'enabled': False,            # Enable/disable sample visualizations
         'save_plots': True,          # Save performance plots
-        'plot_dir': './plots',       # Directory for saving plots
+        'plot_dir': './results/plots',       # Directory for saving plots
     },
 }
 
